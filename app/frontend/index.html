@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School District Evaluator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <section class="hero">
+            <span class="kicker">Parents + Educators</span>
+            <h1>Find districts that fit how your family learns.</h1>
+            <p>Search and compare school districts using academic performance, staffing, spending, and attendance indicators. This starter app uses a development seed dataset and a scoring model you can refine during the workshop.</p>
+        </section>
+
+        <section class="layout">
+            <aside class="panel controls">
+                <div class="control-group">
+                    <label for="search">Search district or state</label>
+                    <input id="search" name="search" type="search" placeholder="Try Montgomery or MD">
+                </div>
+
+                <div class="control-group">
+                    <label for="state">State</label>
+                    <select id="state" name="state">
+                        <option value="">All states</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="locale">Locale</label>
+                    <select id="locale" name="locale">
+                        <option value="">All locales</option>
+                        <option value="Urban">Urban</option>
+                        <option value="Suburban">Suburban</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="minScore">Minimum parent fit score</label>
+                    <input id="minScore" name="minScore" type="range" min="0" max="100" step="5" value="0">
+                    <span id="minScoreValue">0+</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="sort">Sort by</label>
+                    <select id="sort" name="sort">
+                        <option value="parent_fit_score">Parent fit score</option>
+                        <option value="graduation_rate">Graduation rate</option>
+                        <option value="math_proficiency">Math proficiency</option>
+                        <option value="reading_proficiency">Reading proficiency</option>
+                        <option value="student_teacher_ratio">Student-teacher ratio</option>
+                        <option value="per_student_spending">Per-student spending</option>
+                        <option value="teacher_salary">Teacher salary</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="direction">Direction</label>
+                    <select id="direction" name="direction">
+                        <option value="desc">Highest first</option>
+                        <option value="asc">Lowest first</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <button id="resetButton" type="button" class="secondary">Reset filters</button>
+                </div>
+
+                <div id="status" class="status" aria-live="polite"></div>
+            </aside>
+
+            <section>
+                <div class="metrics" id="summary"></div>
+                <div class="results" id="results"></div>
+                <div class="compare-grid" id="compare"></div>
+            </section>
+        </section>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>
