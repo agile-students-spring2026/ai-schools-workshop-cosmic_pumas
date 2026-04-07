@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-04-07T17:09:26.735Z",
+  "snapshotYear": "2022-2023",
+  "sources": {
+    "directory": {
+      "url": "https://nces.ed.gov/ccd/data/zip/ccd_lea_029_2223_w_1a_083023.zip",
+      "schoolYear": "2022-2023"
+    },
+    "staff": {
+      "url": "https://nces.ed.gov/ccd/data/zip/ccd_lea_059_2223_l_1a_083023.zip",
+      "schoolYear": "2022-2023"
+    },
+    "finance": {
+      "url": "https://prod-ies-dm-migration.s3.us-gov-west-1.amazonaws.com/nces/asset_builder_data/2025/09/2025306_0.zip",
+      "schoolYear": "2022-2023"
+    },
+    "locale": {
+      "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICLEA_2223/MapServer/0/query",
+      "schoolYear": "2022-2023"
+    }
+  },
+  "counts": {
+    "directoryRows": 19714,
+    "staffRows": 453876,
+    "financeRows": 19570,
+    "localeRows": 19714,
+    "outputRecords": 12922,
+    "fixtureRecords": 12,
+    "excluded": {
+      "closedDistrict": 41,
+      "invalidEnrollment": 48,
+      "invalidExpenditure": 2,
+      "invalidRevenue": 17,
+      "missingFinance": 171,
+      "missingTeachers": 186,
+      "unsupportedLeaType": 6327
+    }
+  }
+}

@@ -1,0 +1,582 @@
+:root {
+  color-scheme: light;
+  font-family:
+    'IBM Plex Sans',
+    'Avenir Next',
+    'Segoe UI',
+    sans-serif;
+  --bg: #eee4d2;
+  --bg-deep: #e2d2b4;
+  --surface: rgba(255, 252, 246, 0.78);
+  --surface-strong: rgba(255, 249, 239, 0.94);
+  --surface-muted: rgba(126, 85, 43, 0.08);
+  --ink: #241a11;
+  --ink-soft: rgba(36, 26, 17, 0.72);
+  --line: rgba(64, 37, 12, 0.14);
+  --accent: #9f4b22;
+  --accent-strong: #6f2b11;
+  --accent-soft: rgba(159, 75, 34, 0.14);
+  --good: #2d6c52;
+  --warn: #8f5b1f;
+  --bad: #8e3430;
+  --shadow: 0 22px 50px rgba(52, 31, 12, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(204, 113, 56, 0.18), transparent 22%),
+    radial-gradient(circle at 85% 20%, rgba(94, 121, 83, 0.16), transparent 24%),
+    linear-gradient(180deg, #f6efdf 0%, #ead8bc 100%);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(118, 58, 28, 0.12), transparent 30%);
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.48), transparent);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.95rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 251, 244, 0.88);
+  color: var(--ink);
+}
+
+input:focus,
+select:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(159, 75, 34, 0.48);
+  outline-offset: 2px;
+}
+
+main,
+section,
+article,
+div,
+header,
+nav {
+  min-width: 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family:
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+p,
+ul,
+dl {
+  margin: 0;
+}
+
+ul {
+  padding-left: 1.1rem;
+}
+
+.shell {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 9rem;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__branding {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.site-header__title {
+  font-family:
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  font-weight: 600;
+}
+
+.shell__nav {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.shell__nav a,
+.button,
+.compare-chip button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  background: rgba(255, 248, 239, 0.72);
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.shell__nav a:hover,
+.button:hover,
+.compare-chip button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 244, 231, 0.96);
+  border-color: rgba(111, 43, 17, 0.28);
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.button--solid {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #fff8f2;
+  border-color: rgba(111, 43, 17, 0.38);
+}
+
+.button--ghost {
+  background: rgba(255, 248, 239, 0.74);
+}
+
+.stack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.6rem;
+  padding: 1.35rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.card::after {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  content: '';
+  background: linear-gradient(90deg, transparent, rgba(159, 75, 34, 0.24), transparent);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: start;
+  border-radius: 999px;
+  padding: 0.42rem 0.72rem;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+
+.badge--above-average {
+  background: rgba(45, 108, 82, 0.14);
+  color: var(--good);
+}
+
+.badge--average {
+  background: rgba(143, 91, 31, 0.14);
+  color: var(--warn);
+}
+
+.badge--below-average {
+  background: rgba(142, 52, 48, 0.14);
+  color: var(--bad);
+}
+
+.hero,
+.detail-hero,
+.compare-header {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero__content,
+.detail-hero__content {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.hero h1,
+.detail-hero h1,
+.compare-header h1 {
+  font-size: clamp(2.35rem, 5vw, 4.1rem);
+  line-height: 0.96;
+  max-width: 12ch;
+}
+
+.hero__lede,
+.detail-hero__lede,
+.muted-copy,
+.district-card__copy,
+.metric-card__copy,
+.section-heading__meta,
+.comparison-table__metric p,
+.comparison-table__cell p {
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.hero__stats,
+.facts-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.hero__stats div,
+.fact-card {
+  padding: 1rem;
+  border-radius: 1.15rem;
+  background: rgba(255, 251, 245, 0.58);
+  border: 1px solid rgba(64, 37, 12, 0.1);
+}
+
+.hero__stats dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-soft);
+}
+
+.hero__stats dd,
+.fact-card h2 {
+  margin-top: 0.45rem;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-family:
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+}
+
+.search-panel,
+.search-panel__header,
+.search-panel__grid,
+.field,
+.field__query,
+.district-card,
+.district-card__header,
+.district-card__stats,
+.district-card__actions,
+.detail-hero__actions,
+.section-heading,
+.metric-card,
+.metric-card__header,
+.metric-card__benchmarks,
+.brief-panel,
+.brief-panel__columns,
+.brief-panel__state,
+.compare-tray,
+.compare-tray__intro,
+.compare-tray__actions,
+.compare-summary,
+.empty-state {
+  display: grid;
+  gap: 1rem;
+}
+
+.search-panel__header,
+.section-heading,
+.metric-card__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.search-panel__grid {
+  grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+}
+
+.field span {
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+.field__query {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.search-panel__status {
+  min-height: 1.5rem;
+  color: var(--ink-soft);
+}
+
+.district-grid,
+.metric-grid,
+.compare-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.district-card__stats,
+.metric-card__benchmarks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.district-card__stats dt,
+.metric-card__benchmarks dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+
+.district-card__stats dd,
+.metric-card__benchmarks dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.2rem;
+}
+
+.detail-context {
+  gap: 0.6rem;
+}
+
+.brief-panel__comparisons {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+.brief-panel__comparisons li {
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  background: rgba(159, 75, 34, 0.12);
+}
+
+.brief-panel__hint,
+.brief-panel__source {
+  color: var(--ink-soft);
+}
+
+.brief-panel__state {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 248, 239, 0.72);
+}
+
+.brief-panel__state--error {
+  background: rgba(142, 52, 48, 0.12);
+  color: var(--bad);
+}
+
+.brief-panel__summary {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.comparison-table {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 1.15rem;
+  overflow: hidden;
+}
+
+.comparison-table__head,
+.comparison-table__metric,
+.comparison-table__cell {
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: rgba(255, 250, 243, 0.74);
+}
+
+.comparison-table__head {
+  font-weight: 600;
+  background: rgba(153, 96, 48, 0.08);
+}
+
+.comparison-table__metric {
+  background: rgba(255, 246, 234, 0.9);
+}
+
+.comparison-table__value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.empty-state {
+  justify-items: start;
+}
+
+.compare-tray {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  z-index: 20;
+  padding: 1rem;
+  border: 1px solid rgba(64, 37, 12, 0.18);
+  border-radius: 1.5rem;
+  background: rgba(30, 18, 12, 0.9);
+  color: #f8ebdf;
+  box-shadow: 0 24px 60px rgba(12, 8, 5, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.compare-tray::after {
+  display: none;
+}
+
+.compare-tray__list {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.compare-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 220px;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  background: rgba(255, 244, 231, 0.1);
+}
+
+.compare-chip__title {
+  font-weight: 600;
+}
+
+.compare-chip__meta {
+  color: rgba(248, 235, 223, 0.72);
+}
+
+.compare-chip button,
+.compare-tray .button--ghost {
+  color: #f8ebdf;
+  background: rgba(255, 244, 231, 0.12);
+}
+
+.compare-tray .button--solid {
+  background: linear-gradient(135deg, #d97a45 0%, #b54d26 100%);
+  border-color: rgba(244, 197, 167, 0.36);
+}
+
+@media (max-width: 900px) {
+  .site-header,
+  .search-panel__header,
+  .section-heading,
+  .metric-card__header,
+  .detail-hero__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .search-panel__grid,
+  .hero__stats,
+  .facts-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .field__query {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding-inline: 1rem;
+  }
+
+  .hero h1,
+  .detail-hero h1,
+  .compare-header h1 {
+    max-width: none;
+  }
+
+  .district-card__stats,
+  .metric-card__benchmarks,
+  .brief-panel__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-tray {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+}
