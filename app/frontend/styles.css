@@ -64,6 +64,7 @@ label,
 .data-badge,
 .topnav,
 .helper-copy,
+.control-hint,
 .global-status,
 .badge,
 .back-link,
@@ -83,6 +84,7 @@ label,
 .brand-copy,
 .data-badge,
 .helper-copy,
+.control-hint,
 .global-status,
 .result-meta,
 .detail-copy,
@@ -251,6 +253,11 @@ button {
   line-height: 1.5;
 }
 
+.control-hint {
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
 .metrics,
 .result-stats,
 .compare-grid {
@@ -272,6 +279,17 @@ button {
 .peer-card {
   display: grid;
   gap: 16px;
+}
+
+.resource-note {
+  padding: 18px 22px;
+  display: grid;
+  gap: 8px;
+}
+
+.resource-note p {
+  max-width: 70ch;
+  line-height: 1.5;
 }
 
 .saved-header,

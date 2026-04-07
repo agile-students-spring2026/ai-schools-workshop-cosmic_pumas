@@ -156,6 +156,10 @@ function summaryCards(summary, meta) {
         <p>${summary.lowest_ratio_district ? escapeHtml(summary.lowest_ratio_district.district_name) : 'No district available'}.</p>
       </article>
     </section>
+    <section class="panel resource-note">
+      <span class="eyebrow">What The Resource Index Means</span>
+      <p>The resource index is a quick structural signal, not a school-quality grade. Higher values generally mean more teachers relative to students, broader grade coverage, and more schools and staffing capacity inside the district.</p>
+    </section>
   `;
 }
 
@@ -246,6 +250,7 @@ function controlsTemplate(facets) {
       <div class="control-group">
         <label for="search">Search district, state, county, or locale</label>
         <input id="search" type="search" value="${escapeHtml(state.filters.search)}" placeholder="Try Fairfax, Virginia, or Suburb: Large">
+        <span class="control-hint">Type your search and press Enter to apply it.</span>
       </div>
       <div class="control-group">
         <label for="state">State</label>
@@ -618,14 +623,21 @@ document.addEventListener('input', (event) => {
     return;
   }
 
-  if (event.target.id === 'search') {
-    state.filters.search = event.target.value;
-    scheduleHomeReload();
-  }
-
   if (event.target.id === 'minScore') {
     state.filters.minScore = event.target.value;
     scheduleHomeReload();
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  if (getRoute().type !== 'home') {
+    return;
+  }
+
+  if (event.target.id === 'search' && event.key === 'Enter') {
+    event.preventDefault();
+    state.filters.search = event.target.value.trim();
+    loadHome().catch(renderFailure);
   }
 });
 
