@@ -3,11 +3,10 @@
   --ink: #12213a;
   --accent: #c65d2e;
   --accent-dark: #8e3c19;
-  --surface: rgba(255, 252, 246, 0.84);
-  --surface-strong: rgba(255, 252, 246, 0.96);
+  --teal: #296d66;
+  --surface: rgba(255, 252, 246, 0.85);
+  --surface-strong: rgba(255, 252, 246, 0.97);
   --border: rgba(18, 33, 58, 0.12);
-  --success: #29795a;
-  --warn: #b65b2f;
   --shadow: 0 24px 60px rgba(20, 28, 45, 0.12);
 }
 
@@ -21,53 +20,159 @@ body {
   color: var(--ink);
   background:
     radial-gradient(circle at top left, rgba(198, 93, 46, 0.28), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(41, 121, 90, 0.22), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(41, 109, 102, 0.22), transparent 24%),
     linear-gradient(135deg, #ede3d1 0%, #f5f0e8 45%, #e9f0ea 100%);
   min-height: 100vh;
 }
 
-main {
-  width: min(1180px, calc(100% - 32px));
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.topbar,
+#app,
+.global-status {
+  width: min(1240px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 40px 0 64px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0 10px;
+}
+
+.brand {
+  display: grid;
+  gap: 2px;
+  text-decoration: none;
+}
+
+.brand-mark,
+.eyebrow,
+.kicker,
+label,
+.brand-copy,
+.data-badge,
+.topnav,
+.helper-copy,
+.global-status,
+.badge,
+.back-link,
+.action-link,
+.ghost-button,
+.range-caption {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.brand-mark {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+  font-size: 0.8rem;
+}
+
+.brand-copy,
+.data-badge,
+.helper-copy,
+.global-status,
+.result-meta,
+.detail-copy,
+.topnav a,
+.saved-list small {
+  color: rgba(18, 33, 58, 0.74);
+}
+
+.topnav {
+  display: flex;
+  gap: 14px;
+}
+
+.topnav a {
+  text-decoration: none;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.data-badge {
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255, 252, 246, 0.7);
+  border: 1px solid var(--border);
+}
+
+#app {
+  padding: 18px 0 48px;
+}
+
+.hero,
+.detail-shell {
+  display: grid;
+  gap: 22px;
 }
 
 .hero {
-  display: grid;
-  gap: 16px;
   margin-bottom: 28px;
 }
 
-.kicker {
+.kicker,
+.eyebrow {
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-family: "Trebuchet MS", sans-serif;
   font-size: 0.8rem;
   color: var(--accent-dark);
 }
 
 h1,
 h2,
-h3 {
+h3,
+p {
   margin: 0;
+}
+
+h1,
+h2,
+h3 {
   line-height: 1.05;
 }
 
-.hero h1 {
-  font-size: clamp(2.6rem, 6vw, 5.4rem);
-  max-width: 10ch;
+.hero h1,
+.detail-hero h1,
+.compare-hero h1 {
+  font-size: clamp(2.3rem, 5vw, 4.8rem);
+  max-width: 12ch;
 }
 
 .hero p {
-  margin: 0;
-  max-width: 60ch;
+  max-width: 66ch;
   font-size: 1.08rem;
 }
 
-.layout {
+.layout,
+.detail-grid {
   display: grid;
   grid-template-columns: 340px 1fr;
   gap: 24px;
+}
+
+.content-column,
+.results,
+.peer-grid,
+.detail-shell {
+  display: grid;
+  gap: 20px;
 }
 
 .panel {
@@ -78,21 +183,33 @@ h3 {
   backdrop-filter: blur(12px);
 }
 
-.controls {
+.controls,
+.metric-card,
+.result-card,
+.saved-panel,
+.detail-card,
+.detail-hero,
+.compare-hero,
+.compare-table-wrap,
+.peer-card,
+.empty-state {
   padding: 22px;
-  align-self: start;
+}
+
+.controls {
   position: sticky;
-  top: 24px;
+  top: 16px;
+  align-self: start;
+  display: grid;
+  gap: 16px;
 }
 
 .control-group {
   display: grid;
   gap: 8px;
-  margin-bottom: 16px;
 }
 
 label {
-  font-family: "Trebuchet MS", sans-serif;
   font-size: 0.88rem;
 }
 
@@ -100,92 +217,121 @@ input,
 select,
 button {
   width: 100%;
-  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px 14px;
-  font: inherit;
+  border: 1px solid var(--border);
+}
+
+button,
+.action-link,
+.ghost-button {
+  cursor: pointer;
 }
 
 button {
   background: var(--accent);
   color: #fff9f4;
   border: none;
-  font-family: "Trebuchet MS", sans-serif;
   font-weight: 700;
-  cursor: pointer;
 }
 
-button.secondary {
+.secondary {
   background: #fff7ef;
   color: var(--ink);
   border: 1px solid rgba(18, 33, 58, 0.16);
 }
 
-.metrics {
+.small {
+  width: auto;
+  padding: 10px 12px;
+}
+
+.helper-copy {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.metrics,
+.result-stats,
+.compare-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
 }
 
-.metric-card {
-  padding: 18px;
-}
-
-.metric-card strong {
+.metric-card strong,
+.score-pill.large {
   display: block;
+  margin-top: 8px;
   font-size: 2rem;
-  margin-top: 6px;
 }
 
-.results {
+.saved-panel,
+.result-card,
+.detail-card,
+.peer-card {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
-.result-card {
-  padding: 20px;
-  display: grid;
-  gap: 14px;
-}
-
-.result-header {
+.saved-header,
+.result-header,
+.detail-hero,
+.compare-hero,
+.card-actions,
+.detail-actions {
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: start;
 }
 
-.result-header p,
-.result-meta,
-.compare-card p,
-.empty-state p {
+.saved-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  padding: 0;
   margin: 0;
 }
 
-.score-pill {
-  min-width: 78px;
-  text-align: center;
-  padding: 10px 12px;
-  border-radius: 999px;
-  background: rgba(41, 121, 90, 0.12);
-  color: var(--success);
-  font-weight: 700;
+.saved-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(18, 33, 58, 0.08);
+}
+
+.empty-item {
+  color: rgba(18, 33, 58, 0.7);
+}
+
+.ghost-button,
+.action-link,
+.back-link {
+  border: none;
+  background: none;
+  padding: 0;
+  text-decoration: none;
+  color: var(--teal);
 }
 
 .result-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  color: rgba(18, 33, 58, 0.72);
-  font-family: "Trebuchet MS", sans-serif;
   font-size: 0.92rem;
 }
 
-.result-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+.score-pill {
+  min-width: 84px;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(41, 109, 102, 0.12);
+  color: var(--teal);
+  font-weight: 700;
 }
 
 .stat {
@@ -198,92 +344,97 @@ button.secondary {
 .stat span {
   display: block;
   font-size: 0.82rem;
-  font-family: "Trebuchet MS", sans-serif;
   color: rgba(18, 33, 58, 0.68);
 }
 
-.stat strong {
+.stat strong,
+.peer-card a {
   display: block;
   margin-top: 6px;
-  font-size: 1.1rem;
 }
 
-.compare-grid {
-  display: grid;
+.detail-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 26px;
 }
 
-.compare-card {
-  padding: 20px;
+.detail-copy {
+  display: grid;
+  gap: 10px;
+  line-height: 1.5;
 }
 
 .compare-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 12px;
 }
 
 .compare-table th,
 .compare-table td {
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(18, 33, 58, 0.1);
   text-align: left;
+  vertical-align: top;
+  padding: 14px 10px;
+  border-bottom: 1px solid rgba(18, 33, 58, 0.1);
 }
 
-.badge {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(198, 93, 46, 0.12);
-  color: var(--accent-dark);
-  font-family: "Trebuchet MS", sans-serif;
-  font-size: 0.8rem;
+.compare-table thead th {
+  font-size: 0.92rem;
 }
 
-.empty-state {
-  padding: 24px;
-  text-align: center;
+.compare-table thead small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(18, 33, 58, 0.68);
 }
 
-.status {
-  margin-top: 14px;
+.compare-table.wide th:first-child {
+  width: 220px;
+}
+
+.global-status {
+  padding-bottom: 28px;
   min-height: 24px;
-  font-family: "Trebuchet MS", sans-serif;
-  color: rgba(18, 33, 58, 0.74);
 }
 
 @media (max-width: 980px) {
-  .layout {
+  .topbar,
+  .layout,
+  .detail-grid,
+  .saved-header,
+  .detail-hero,
+  .compare-hero,
+  .result-header,
+  .card-actions,
+  .detail-actions {
+    flex-direction: column;
+  }
+
+  .layout,
+  .detail-grid,
+  .metrics,
+  .result-stats,
+  .compare-grid {
     grid-template-columns: 1fr;
   }
 
   .controls {
     position: static;
   }
-
-  .metrics,
-  .result-stats,
-  .compare-grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 640px) {
-  main {
+  .topbar,
+  #app,
+  .global-status {
     width: min(100% - 20px, 100%);
-    padding-top: 24px;
   }
 
-  .metrics,
-  .result-stats,
-  .compare-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .result-header {
+  .topbar {
+    align-items: start;
     flex-direction: column;
+  }
+
+  .compare-table {
+    display: block;
+    overflow-x: auto;
   }
 }

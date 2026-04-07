@@ -1,0 +1,10 @@
+[run]
+branch = True
+source =
+    backend
+
+[report]
+skip_empty = True
+show_missing = True
+omit =
+    backend/sync_district_data.py

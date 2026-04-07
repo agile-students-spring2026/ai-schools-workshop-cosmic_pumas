@@ -1,66 +1,49 @@
-import json
 from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
+try:
+    from backend.data_pipeline import load_cached_or_fallback, refresh_cache
+except ModuleNotFoundError:
+    from data_pipeline import load_cached_or_fallback, refresh_cache
+
 
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
-DATA_FILE = BASE_DIR / "data" / "districts.json"
-
-STATE_NAMES = {
-    "AZ": "Arizona",
-    "CO": "Colorado",
-    "MD": "Maryland",
-    "NC": "North Carolina",
-    "NE": "Nebraska",
-    "OR": "Oregon",
-    "TX": "Texas",
-    "VA": "Virginia",
-    "WI": "Wisconsin",
-}
-
-DEFAULT_SORT = "parent_fit_score"
+DEFAULT_SORT = "resource_index"
 VALID_SORT_FIELDS = {
     "district_name",
     "state",
-    "graduation_rate",
-    "math_proficiency",
-    "reading_proficiency",
     "student_teacher_ratio",
-    "per_student_spending",
-    "teacher_salary",
-    "college_readiness",
-    "equity_score",
-    "parent_fit_score",
+    "teacher_count",
+    "enrollment",
+    "school_count",
+    "resource_index",
 }
 
 
-def compute_parent_fit_score(district):
-    academic_index = (
-        district["graduation_rate"] * 0.3
-        + district["math_proficiency"] * 0.2
-        + district["reading_proficiency"] * 0.2
-        + district["college_readiness"] * 0.2
-        + district["equity_score"] * 0.1
-    )
-    absenteeism_penalty = district["chronic_absenteeism"] * 0.35
-    ratio_penalty = max(district["student_teacher_ratio"] - 12, 0) * 1.4
-    return max(0, min(100, academic_index - absenteeism_penalty - ratio_penalty + 12))
+DATA_STORE = load_cached_or_fallback(prefer_live=False)
 
 
-def load_districts():
-    with DATA_FILE.open("r", encoding="utf-8") as file_handle:
-        districts = json.load(file_handle)
-
-    for district in districts:
-        district["parent_fit_score"] = round(compute_parent_fit_score(district), 1)
-
-    return districts
+def current_dataset():
+    return DATA_STORE
 
 
-DISTRICTS = load_districts()
+def current_districts():
+    return current_dataset()["districts"]
+
+
+def current_meta():
+    return current_dataset()["meta"]
+
+
+def build_facets():
+    districts = current_districts()
+    return {
+        "states": sorted({district["state"] for district in districts}),
+        "locales": sorted({district["locale"] for district in districts}),
+    }
 
 
 def filter_districts(districts, search_term, state, min_score, locale):
@@ -73,7 +56,9 @@ def filter_districts(districts, search_term, state, min_score, locale):
             for district in filtered
             if lowered in district["district_name"].lower()
             or lowered in district["state"].lower()
-            or lowered in STATE_NAMES.get(district["state"], "").lower()
+            or lowered in district["state_name"].lower()
+            or lowered in district["county_name"].lower()
+            or lowered in district["locale"].lower()
         ]
 
     if state:
@@ -83,7 +68,7 @@ def filter_districts(districts, search_term, state, min_score, locale):
         filtered = [district for district in filtered if district["locale"].lower() == locale.lower()]
 
     if min_score is not None:
-        filtered = [district for district in filtered if district["parent_fit_score"] >= min_score]
+        filtered = [district for district in filtered if district["resource_index"] >= min_score]
 
     return filtered
 
@@ -95,52 +80,97 @@ def sort_districts(districts, sort_field, sort_direction):
 
 
 def build_summary(districts):
+    meta = current_meta()
+
     if not districts:
         return {
             "district_count": 0,
             "top_state": None,
             "average_score": 0,
-            "best_value_district": None,
+            "lowest_ratio_district": None,
+            "dataset_year": meta.get("dataset_year"),
+            "source_mode": meta.get("source_mode"),
         }
 
     average_score = round(
-        sum(district["parent_fit_score"] for district in districts) / len(districts),
+        sum(district["resource_index"] for district in districts) / len(districts),
         1,
     )
 
     state_totals = {}
     for district in districts:
-        state_totals.setdefault(district["state"], []).append(district["parent_fit_score"])
+        state_totals.setdefault(district["state"], []).append(district["resource_index"])
 
     top_state, _ = max(
         state_totals.items(),
         key=lambda item: sum(item[1]) / len(item[1]),
     )
 
-    best_value_district = max(
+    lowest_ratio_district = min(
         districts,
-        key=lambda district: district["parent_fit_score"] / district["per_student_spending"],
+        key=lambda district: district["student_teacher_ratio"],
     )
 
     return {
         "district_count": len(districts),
         "top_state": top_state,
         "average_score": average_score,
-        "best_value_district": {
-            "id": best_value_district["id"],
-            "district_name": best_value_district["district_name"],
-            "parent_fit_score": best_value_district["parent_fit_score"],
+        "lowest_ratio_district": {
+            "id": lowest_ratio_district["id"],
+            "district_name": lowest_ratio_district["district_name"],
+            "student_teacher_ratio": lowest_ratio_district["student_teacher_ratio"],
         },
+        "dataset_year": meta.get("dataset_year"),
+        "source_mode": meta.get("source_mode"),
     }
 
 
-def create_app():
+def find_district(district_id):
+    return next((item for item in current_districts() if item["id"] == district_id), None)
+
+
+def build_detail_payload(district):
+    peers = [
+        item
+        for item in current_districts()
+        if item["state"] == district["state"] and item["id"] != district["id"]
+    ]
+    peers.sort(key=lambda item: (-item["resource_index"], item["district_name"]))
+
+    return {
+        "district": district,
+        "peers": peers[:4],
+        "meta": current_meta(),
+    }
+
+
+def create_app(data_store=None):
+    global DATA_STORE
+
+    if data_store is not None:
+        DATA_STORE = data_store
+
     app = Flask(__name__, static_folder=None)
     CORS(app)
 
     @app.get("/api/health")
     def health_check():
         return jsonify({"status": "ok"})
+
+    @app.get("/api/data/status")
+    def data_status():
+        meta = current_meta()
+        return jsonify(meta)
+
+    @app.post("/api/data/refresh")
+    def refresh_data():
+        global DATA_STORE
+
+        try:
+            DATA_STORE = refresh_cache()
+            return jsonify(DATA_STORE["meta"])
+        except Exception as error:
+            return jsonify({"error": f"Unable to refresh live data: {error}"}), 502
 
     @app.get("/api/districts")
     def get_districts():
@@ -158,13 +188,20 @@ def create_app():
             except ValueError:
                 return jsonify({"error": "minScore must be numeric"}), 400
 
-        filtered = filter_districts(DISTRICTS, search_term, state, parsed_score, locale)
+        filtered = filter_districts(current_districts(), search_term, state, parsed_score, locale)
         ordered = sort_districts(filtered, sort_field, sort_direction)
+        summary = build_summary(ordered)
+
+        limit = request.args.get("limit")
+        if limit:
+            ordered = ordered[: max(1, min(100, int(limit)))]
 
         return jsonify(
             {
                 "districts": ordered,
-                "summary": build_summary(ordered),
+                "summary": summary,
+                "meta": current_meta(),
+                "facets": build_facets(),
                 "filters": {
                     "search": search_term,
                     "state": state.upper(),
@@ -178,14 +215,33 @@ def create_app():
 
     @app.get("/api/districts/<district_id>")
     def get_district(district_id):
-        district = next((item for item in DISTRICTS if item["id"] == district_id), None)
+        district = find_district(district_id)
         if district is None:
             return jsonify({"error": "District not found"}), 404
 
-        return jsonify(district)
+        return jsonify(build_detail_payload(district))
+
+    @app.get("/api/comparisons")
+    def get_comparisons():
+        ids = [value.strip() for value in request.args.get("ids", "").split(",") if value.strip()]
+        if not ids:
+            return jsonify({"districts": [], "meta": current_meta()})
+
+        matches = [district for district in current_districts() if district["id"] in ids]
+        sort_order = {district_id: index for index, district_id in enumerate(ids)}
+        matches.sort(key=lambda district: sort_order.get(district["id"], 9999))
+        return jsonify({"districts": matches, "meta": current_meta()})
 
     @app.get("/")
     def serve_index():
+        return send_from_directory(FRONTEND_DIR, "index.html")
+
+    @app.get("/compare")
+    def serve_compare():
+        return send_from_directory(FRONTEND_DIR, "index.html")
+
+    @app.get("/district/<district_id>")
+    def serve_district_page(district_id):
         return send_from_directory(FRONTEND_DIR, "index.html")
 
     @app.get("/<path:asset_path>")
